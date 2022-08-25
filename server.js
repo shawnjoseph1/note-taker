@@ -5,7 +5,7 @@ const notes = require("./Develop/db/db.json");
 
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5500;
 
 
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -13,9 +13,21 @@ app.use(express.json()); // for parsing application/json
 app.use(express.static("public")); // for serving static files
 
 app.get("/api/notes", (req, res) => { //get all notes
-  res.sendFile(path.join(__dirname, "./db/db.json"));  //send all notes
+  let results = notes; 
+  res.json(results)
 });
 
+function createNewNote(body, notesArray) {
+  console.log(body);
+  const note = body;
+  notesArray.push(note);
+  fs.writeFileSync(
+    path.join(__dirname, "./db/db.json"),
+    JSON.stringify({ notes: notesArray }, null, 2)
+  );
+
+  return note;
+}
 
 app.post("/api/notes", (req, res) => {
   const notes = JSON.parse(fs.readFileSync("./db/db.json")); //get all notes from db.json file
