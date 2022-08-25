@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
-const notes = require("./db/db.json");
+const notes = require("./Develop/db/db.json");
 
 
 const app = express();
@@ -13,31 +13,17 @@ app.use(express.json()); // for parsing application/json
 app.use(express.static("public")); // for serving static files
 
 app.get("/api/notes", (req, res) => { //get all notes
-    res.sendFile(path.join(__dirname, "./db/db.json"));  //send all notes
-}); 
-
-
-function createNewNote(body, notesArray) { //create new note
-  const note = body; //create new note
-  notesArray.push(note); //push new note to notes array
-  fs.writeFileSync( //write new note to db.json
-    path.join(__dirname, "./db/db.json"),
-    JSON.stringify({ notes: notesArray }, null, 2) 
-  );
-
-  return note;
-}
-
-app.get("/api/notes", (req, res) => { //get all notes
-  let results = notes; //get all notes from db.json file
-  res.json(results); 
+  res.sendFile(path.join(__dirname, "./db/db.json"));  //send all notes
 });
 
 
 app.post("/api/notes", (req, res) => {
-  req.body.id = notes.length.toString();
-  const note = createNewNote(req.body, notes);
-  res.json(req.body);
+  const notes = JSON.parse(fs.readFileSync("./db/db.json")); //get all notes from db.json file
+  const newNotes = req.body; 
+  newNotes.id = notes.length + 1; //set new note id
+  notes.push(newNotes);
+  fs.writeFileSync("./db/db.json", JSON.stringify(notes)); //write new note to db.json
+  res.json(notes)
 });
 
 app.delete('/api/notes/:NoteId', (req, res) =>{ //delete note
@@ -55,7 +41,6 @@ app.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
-
-app.listen(PORT, () => {
+app.listen(PORT, function () {
   console.log("App is now on PORT" + PORT);
 });
