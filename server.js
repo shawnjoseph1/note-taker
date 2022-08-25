@@ -28,7 +28,6 @@ function createNewNote(body, notesArray) { //create new note
   return note;
 }
 
-
 app.get("/api/notes", (req, res) => { //get all notes
   let results = notes; //get all notes from db.json file
   res.json(results); 
