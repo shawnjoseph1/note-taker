@@ -12,42 +12,37 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 app.use(express.json()); // for parsing application/json
 app.use(express.static("./Develop/public")); 
 
-// api routing 
-function createNewNote(body, notesArray) {
-  console.log(body);
-  const note = body;
-  notesArray.push(note);
-  fs.writeFileSync(
-    path.join(__dirname, "./db/db.json"),
-    JSON.stringify({ notes: notesArray }, null, 2)
+
+function createNewNote(body, notesArray) { // create a new note
+  console.log(body); // log the body of the note to the console
+  const note = body; // create a new note object
+  notesArray.push(note); // push the note to the notes array
+  fs.writeFileSync( // write the new note to the notes.json file
+    path.join(__dirname, "./db/db.json"), // join the path to the db.json file
+    JSON.stringify({ notes: notesArray }, null, 2) // stringify the notes array and indent it by 2 spaces
   );
 
-  return note;
+  return note; // return the note
 }
 
-app.get("/api/notes", (req, res) => {
-  let results = notes;
-  res.json(results);
+app.get("/api/notes", (req, res) => { // get the notes from the notes.json file
+  res.sendFile(path.join(__dirname, "./Develop/db/db.json")) // send the notes.json file
+}); 
+
+
+app.post("/api/notes", (req, res) => {
+  const notes = JSON.parse(fs.readFileSync("./Develop/db/db.json"));
+  const newNotes = req.body;
+  notes.push(newNotes);
+  fs.writeFileSync("./Develop/db/db.json", JSON.stringify(notes))
+  res.json(notes);
 });
 
-  app.post("/api/notes", (req, res) => {  
-    const note = req.body; 
-    readFile("./Develop/db/db.json", 'utf-8').then((data) => { 
-    const notes = [].concat(JSON.parse(data)); 
-    note.id = notes.length + 1;
-    notes.push(note);
-    return notes;
-    }).then((notes) => {
-      writeFile("./Develop/db/db.json", JSON.stringify(notes));
-      res.json(notes);
-    })
-  });
-
-app.delete('/api/notes/:id', (req, res) =>{ //delete note
-const notes = JSON.parse(fs.readFileSync(path.join(__dirname, "./Develop/db/db.json"))); //read db.json file
-const delNote = notes.filter(rmvNote => rmvNote.id !== req.params.NoteId); //filter out the note to be deleted
-fs.writeFileSync("./Develop/db/db.json", JSON.stringify(delNote)); //write to db.json file
-res.json(delNote); //send back the updated notes array
+app.delete("/api/notes/:id", (req, res) => {
+  const notes = JSON.parse(fs.readFileSync("./db/db.json"));
+  const delNote = notes.filter((rmvNote) => rmvNote.id !== req.params.id);
+  fs.writeFileSync("./db/db.json", JSON.stringify(delNote));
+  res.json(delNote);
 })
 
 // routing for the html files
