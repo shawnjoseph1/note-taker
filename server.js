@@ -1,4 +1,4 @@
-
+// used https://www.youtube.com/watch?v=Qo71smMMQBc&t=132s as reference/help 
 const fs = require("fs"); 
 const path = require("path");
 const express = require("express");
@@ -23,7 +23,6 @@ app.get('/api/notes', (req, res) => {
     const note = req.body; 
     readFile('C:/Users/shawn/notetaker/Develop/db/db.json', 'utf-8').then((data) => { 
     const notes = [].concat(JSON.parse(data)); 
-    note.id = uuidv4();
     notes.push(note);
     return notes;
     }).then((notes) => {
