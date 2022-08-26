@@ -1,4 +1,7 @@
-# Note Taker
+# Express Notes
+
+![Screenshot](./Develop/public/assets/images/expressnotes.png)
+
 ## Description
 
 Express notes is a basic note taking app that helps you save and retrieve your notes all in one place
@@ -13,11 +16,14 @@ Express notes is a basic note taking app that helps you save and retrieve your n
 
 Run node server.js in your terminal to get started
 
+## Link
+Click [here](https://express-notes-js.herokuapp.com/) to be taken to the application
+
 ## Usage
 
 Javascript, ExpressJS, Node, HTML, Bootstrap
 
 
 ## License
-MIT
+[MIT](https://choosealicense.com/licenses/mit/)
 
